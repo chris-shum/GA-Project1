@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -32,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private String mDuplicate = "";
     ArrayList<String> mArrayList = new ArrayList<>();
     HashMap<String, ArrayList<String>> allArrayLists;
-//    HashMap<String, Boolean> mArrayIsFull;
-    TextView textTest;
-    static ArrayList<String> mListArray2;
 
 
     @Override
@@ -42,16 +40,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textTest = (TextView)findViewById(R.id.textView2);
-
         mListNames = (ListView) findViewById(R.id.listView);
         mEditText = (EditText) findViewById(R.id.inputView);
         mListButton = (Button) findViewById(R.id.button);
         mListArray = new ArrayList<>();
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListArray);
         mListNames.setAdapter(mAdapter);
-//        mArrayIsFull = new HashMap<>();
         allArrayLists = new HashMap<>();
+
 
         View.OnClickListener submitListener = new View.OnClickListener() {
             @Override
@@ -73,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     if (mEditText.getText().toString().length() == 0) {
-                        mEditText.setError("Fill in field before booping.");
+                        mEditText.setError("Fill in field before BOOPing.");
                     } else if (mListArray.contains(mEditText.getText().toString())) {
-                        mEditText.setError("List name already exists. Would you like to delete it? (y/n)");
+                        mEditText.setError("List name already exists. \nWould you like to delete it? (y/n)");
                         mIsWaitingForDeleteInput = true;
                         mDuplicate = mEditText.getText().toString();
                         mEditText.setText("");
@@ -95,27 +91,15 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-
-
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
-
                 TextView textView = (TextView) view;
+
                 String title = textView.getText().toString();
-
-                intent.putExtra("TITLE", title);
-
-
-//                mArrayIsFull.put(((TextView) view).getText().toString(), false);
-
-//                if (mArrayIsFull.get(((TextView) view).getText().toString())) {
-//                    allArrayLists.put(((TextView) view).getText().toString(), mArrayList);
-//                }
-
                 mArrayList = allArrayLists.get(title);
+                intent.putExtra("TITLE", title);
                 intent.putStringArrayListExtra("LIST", mArrayList);
+
                 startActivityForResult(intent, 0);
-
-
             }
         };
         mListNames.setOnItemClickListener(onItemClickListener);
@@ -123,21 +107,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         ArrayList<String> returnedStringArray = data.getStringArrayListExtra("RETURNED_ARRAY");
         String returnedString = data.getStringExtra("TITLE");
-
-//        mArrayList.clear();
         mArrayList = returnedStringArray;
         allArrayLists.put(returnedString, mArrayList);
-//        mArrayIsFull.put(returnedString, true);
-
-//        textTest.setText(returnedString);
-
-
+        Toast.makeText(this ,returnedString+ " list saved!", Toast.LENGTH_SHORT).show();
     }
-
-
 }
 

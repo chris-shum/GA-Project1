@@ -39,8 +39,6 @@ public class SubActivity extends AppCompatActivity {
         mListButtonSub = (Button) findViewById(R.id.buttonSub);
 
 
-
-
         Intent receivedIntent = getIntent();
 
         final String receivedString = receivedIntent.getStringExtra("TITLE");
@@ -57,7 +55,6 @@ public class SubActivity extends AppCompatActivity {
 
         mAdapterSub = new ArrayAdapter<String>(SubActivity.this, android.R.layout.simple_list_item_1, mListArray);
         mListNamesSub.setAdapter(mAdapterSub);
-
         mAdapterSub.notifyDataSetChanged();
 
         View.OnClickListener submitListener = new View.OnClickListener() {
@@ -86,21 +83,16 @@ public class SubActivity extends AppCompatActivity {
 
 
                             Intent returningIntent = new Intent();
-                            returningIntent.putStringArrayListExtra("RETURNED_ARRAY", mListArray);
-
                             returningIntent.putExtra("TITLE", receivedString);
-
-
+                            returningIntent.putStringArrayListExtra("RETURNED_ARRAY", mListArray);
                             setResult(RESULT_OK, returningIntent);
                             finish();
-
-
                         } else {
                             mIsWaitingForSaveInput = false;
                             mEditTextSub.setText("");
                         }
                     } else if (mEditTextSub.getText().toString().length() == 0) {
-                        mEditTextSub.setError("No input: Would you like to save this list and return to the main screen?  (y/n)");
+                        mEditTextSub.setError("No input: \nWould you like to save this list and return to the main screen?  (y/n)");
                         mIsWaitingForSaveInput = true;
                         mEditTextSub.setText("");
                     } else if (mListArray.contains(mEditTextSub.getText().toString())) {
