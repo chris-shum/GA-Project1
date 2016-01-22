@@ -1,6 +1,7 @@
 package com.example.android.list;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayAdapter<String> mAdapter;
     private boolean mIsWaitingForDeleteInput = false;
     private String mDuplicate = "";
+    ArrayList<String> mArrayList = new ArrayList<>();
 
 
     @Override
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         mEditText = (EditText) findViewById(R.id.inputView);
         mListButton = (Button) findViewById(R.id.button);
         mListArray = new ArrayList<>();
+
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListArray);
         mListNames.setAdapter(mAdapter);
@@ -84,23 +87,58 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
+
+
+
+
+
+
+
+
+
+
+
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
-                startActivity(intent);
+
+                intent.putExtra("TITLE", mListArray.get(position));
 
 
-//                TextView editTextView = ((TextView) view);
-//                editTextView.setText("It works!");
+                intent.putStringArrayListExtra("LIST", mArrayList);
+                startActivityForResult(intent, 0);
 
-//                Intent intent = new Intent(MainActivity.this, SubActivity.class);
-//                intent.putExtra  ("ARRAY", 34);
-////                startActivity(intent);
-//
-//                startActivityForResult(intent, 0);
 
-                //set intent here and blah blah blah
+
+
+
+
+
+
 
             }
         };
         mListNames.setOnItemClickListener(onItemClickListener);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        ArrayList<String> returnedStringArray = data.getStringArrayListExtra("RETURNED_ARRAY");
+        int returnedNumber = data.getIntExtra("RETURNED_NUMBER", -1);
+
+
+
+
+
+
+
+
+
+
+        mArrayList.clear();
+        mArrayList.addAll(returnedStringArray);
+
+
+    }
 }
+

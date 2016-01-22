@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SubActivity extends AppCompatActivity {
@@ -41,6 +42,18 @@ public class SubActivity extends AppCompatActivity {
         mListNamesSub.setAdapter(mAdapterSub);
 
 
+        Intent receivedIntent = getIntent();
+
+        receivedIntent.getStringExtra("TITLE");
+        String receivedString = receivedIntent.getStringExtra("TITLE");
+        TextView textView = (TextView) findViewById(R.id.listTitle);
+        textView.setText("List:" + receivedString);
+
+        ArrayList<String> arrayList123 = receivedIntent.getStringArrayListExtra("LIST");
+        mListArray.addAll(arrayList123);
+        mListNamesSub.setAdapter(mAdapterSub);
+
+
         View.OnClickListener submitListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,9 +77,30 @@ public class SubActivity extends AppCompatActivity {
                     if (mIsWaitingForSaveInput) {
                         if (mEditTextSub.getText().toString().toLowerCase().contains("y")) {
                             mIsWaitingForSaveInput = false;
-                            //needs a go back intent
-                            Intent intent = new Intent(SubActivity.this, MainActivity.class);
-                            startActivity(intent);
+
+
+
+
+
+
+
+
+
+                            Intent returningIntent = new Intent();
+                            returningIntent.putStringArrayListExtra("RETURNED_ARRAY", mListArray);
+
+
+
+
+
+
+
+
+
+                            setResult(RESULT_OK, returningIntent);
+                            finish();
+
+
                         } else {
                             mIsWaitingForSaveInput = false;
                             mEditTextSub.setText("");
@@ -100,13 +134,11 @@ public class SubActivity extends AppCompatActivity {
                     editTextView.setTextColor(Color.BLACK);
                     editTextView.setText(mListArray.get(position));
                 } else {
-                    editTextView.setText(mListArray.get(position) + "checked off!\n- Enter "+mListArray.get(position)+" below to delete.");
+                    editTextView.setText(mListArray.get(position) + "checked off!\n- Enter " + mListArray.get(position) + " below to delete.");
                     editTextView.setTextColor(Color.RED);
                 }
             }
         };
         mListNamesSub.setOnItemClickListener(onItemClickListener);
-
-
     }
 }
