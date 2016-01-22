@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -36,23 +37,28 @@ public class SubActivity extends AppCompatActivity {
         mListNamesSub = (ListView) findViewById(R.id.listViewSub);
         mEditTextSub = (EditText) findViewById(R.id.inputViewSub);
         mListButtonSub = (Button) findViewById(R.id.buttonSub);
-        mListArray = new ArrayList<>();
 
-        mAdapterSub = new ArrayAdapter<String>(SubActivity.this, android.R.layout.simple_list_item_1, mListArray);
-        mListNamesSub.setAdapter(mAdapterSub);
+
 
 
         Intent receivedIntent = getIntent();
 
-        receivedIntent.getStringExtra("TITLE");
-        String receivedString = receivedIntent.getStringExtra("TITLE");
+        final String receivedString = receivedIntent.getStringExtra("TITLE");
         TextView textView = (TextView) findViewById(R.id.listTitle);
-        textView.setText("List:" + receivedString);
+        textView.setText("List: " + receivedString);
 
         ArrayList<String> arrayList123 = receivedIntent.getStringArrayListExtra("LIST");
-        mListArray.addAll(arrayList123);
+        if (arrayList123 == null) {
+            mListArray = new ArrayList<>();
+        } else {
+            mListArray = arrayList123;
+        }
+
+
+        mAdapterSub = new ArrayAdapter<String>(SubActivity.this, android.R.layout.simple_list_item_1, mListArray);
         mListNamesSub.setAdapter(mAdapterSub);
 
+        mAdapterSub.notifyDataSetChanged();
 
         View.OnClickListener submitListener = new View.OnClickListener() {
             @Override
@@ -79,22 +85,10 @@ public class SubActivity extends AppCompatActivity {
                             mIsWaitingForSaveInput = false;
 
 
-
-
-
-
-
-
-
                             Intent returningIntent = new Intent();
                             returningIntent.putStringArrayListExtra("RETURNED_ARRAY", mListArray);
 
-
-
-
-
-
-
+                            returningIntent.putExtra("TITLE", receivedString);
 
 
                             setResult(RESULT_OK, returningIntent);
@@ -106,11 +100,11 @@ public class SubActivity extends AppCompatActivity {
                             mEditTextSub.setText("");
                         }
                     } else if (mEditTextSub.getText().toString().length() == 0) {
-                        mEditTextSub.setError("No input, would you like to save and return to the main screen?  (y/n)");
+                        mEditTextSub.setError("No input: Would you like to save this list and return to the main screen?  (y/n)");
                         mIsWaitingForSaveInput = true;
                         mEditTextSub.setText("");
                     } else if (mListArray.contains(mEditTextSub.getText().toString())) {
-                        mEditTextSub.setError("List name already exists. Would you like to delete it? (y/n)");
+                        mEditTextSub.setError("Item already exists. Would you like to delete it? (y/n)");
                         mIsWaitingForDeleteInput = true;
                         mDuplicate = mEditTextSub.getText().toString();
                         mEditTextSub.setText("");
@@ -134,7 +128,7 @@ public class SubActivity extends AppCompatActivity {
                     editTextView.setTextColor(Color.BLACK);
                     editTextView.setText(mListArray.get(position));
                 } else {
-                    editTextView.setText(mListArray.get(position) + "checked off!\n- Enter " + mListArray.get(position) + " below to delete.");
+                    editTextView.setText(mListArray.get(position) + " checked off!\n- Enter " + mListArray.get(position) + " below and Boop to delete.");
                     editTextView.setTextColor(Color.RED);
                 }
             }
