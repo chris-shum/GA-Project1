@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("TITLE", title);
                 intent.putStringArrayListExtra("LIST", mArrayList);
 
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, 100);
             }
         };
         mListNames.setOnItemClickListener(onItemClickListener);
@@ -107,11 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ArrayList<String> returnedStringArray = data.getStringArrayListExtra("RETURNED_ARRAY");
-        String returnedString = data.getStringExtra("TITLE");
-        mArrayList = returnedStringArray;
-        allArrayLists.put(returnedString, mArrayList);
-        Toast.makeText(this ,returnedString+ " list saved!", Toast.LENGTH_SHORT).show();
+        if(data != null) {
+            ArrayList<String> returnedStringArray = data.getStringArrayListExtra("RETURNED_ARRAY");
+            String returnedString = data.getStringExtra("TITLE");
+            mArrayList = returnedStringArray;
+            allArrayLists.put(returnedString, mArrayList);
+            Toast.makeText(this, returnedString + " list saved!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
