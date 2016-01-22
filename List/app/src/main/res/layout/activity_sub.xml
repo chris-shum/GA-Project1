@@ -12,27 +12,27 @@
     tools:context="com.example.android.list.MainActivity">
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/listViewSub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
 
     <LinearLayout
-        android:id="@+id/lowerLayout"
+        android:id="@+id/lowerLayoutSub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/inputView"
+            android:id="@+id/inputViewSub"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="List Name" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="boop" />

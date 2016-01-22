@@ -1,11 +1,15 @@
 package com.example.android.list;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     Button mListButton;
     static ArrayList<String> mListArray;
     static ArrayAdapter<String> mAdapter;
+    private boolean mIsWaitingForDeleteInput = false;
+    private String mDuplicate = "";
 
 
     @Override
@@ -32,25 +38,69 @@ public class MainActivity extends AppCompatActivity {
         mListButton = (Button) findViewById(R.id.button);
         mListArray = new ArrayList<>();
 
-        mAdapter = new ArrayAdapter<String>(this, R.layout.checkbox, mListArray);
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListArray);
         mListNames.setAdapter(mAdapter);
 
         View.OnClickListener submitListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEditText.getText().toString().length() == 0) {
-                    mEditText.setError("Fill in before adding.");
-                } else if (mListArray.contains(mEditText.getText().toString())) {
-                    mEditText.setError("List name has already been entered");
-                } else {
-                    mListArray.add(mEditText.getText().toString());
-                    mAdapter.notifyDataSetChanged();
+                if (mIsWaitingForDeleteInput) {
+                    if (mEditText.getText().toString().toLowerCase().contains("y")) {
+                        for (int i = 0; i < mListArray.size(); i++) {
+                            String tempName = mListArray.get(i);
+                            if (tempName.equals(mDuplicate)) {
+                                mListArray.remove(i);
+                                mIsWaitingForDeleteInput = false;
+                                mAdapter.notifyDataSetChanged();
+                                break;
+                            }
+                            mEditText.setText("");
+                        }
+                    } else mIsWaitingForDeleteInput = false;
                     mEditText.setText("");
+
+                } else {
+                    if (mEditText.getText().toString().length() == 0) {
+                        mEditText.setError("Fill in before adding.");
+                    } else if (mListArray.contains(mEditText.getText().toString())) {
+                        mEditText.setError("List name already exists. Would you like to delete it? (y/n)");
+                        mIsWaitingForDeleteInput = true;
+                        mDuplicate = mEditText.getText().toString();
+                        mEditText.setText("");
+
+                    } else {
+                        mIsWaitingForDeleteInput = false;
+                        mListArray.add(mEditText.getText().toString());
+                        mAdapter.notifyDataSetChanged();
+                        mEditText.setText("");
+                    }
                 }
             }
         };
         mListButton.setOnClickListener(submitListener);
 
 
+        AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                startActivity(intent);
+
+
+//                TextView editTextView = ((TextView) view);
+//                editTextView.setText("It works!");
+
+//                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+//                intent.putExtra  ("ARRAY", 34);
+////                startActivity(intent);
+//
+//                startActivityForResult(intent, 0);
+
+                //set intent here and blah blah blah
+
+            }
+        };
+        mListNames.setOnItemClickListener(onItemClickListener);
     }
 }
